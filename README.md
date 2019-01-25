@@ -10,7 +10,7 @@ Use Java to compile the .java files from the "src/FeatureExtractorLibrary/" fold
 javac *.java
 ```
 
-You can run the program if you modify the main function from "FeatureExtractorLibraryMainTest" class according to your needs or of you include the library in your project as a .jar dependency.
+You can run the program if you modify the main function from "FeatureExtractorLibraryMainTest" class according to your needs or of you include the library in your project as a .jar dependency. For the latter you can use the "FeatureExtractorLibrary.jar" file present in the root of the repo
 
 ## Usage
 

@@ -22,8 +22,9 @@ public class FeatureExtractor {
     private static int WINSIZE;
     //private ArrayList<Accelerometer> dataset;
 
-    private FeatureExtractor(){}
-    
+    private FeatureExtractor() {
+    }
+
     /**
      * Extracts features from the dataset.
      *
@@ -150,6 +151,7 @@ public class FeatureExtractor {
             String userId = Settings.getDefaultUserId();
             if (inputFileName.matches("[A-Za-z0-9]+_[A-Za-z0-9]+_.*")) {
                 userId = inputFileName.substring(inputFileName.indexOf('_') + 1, inputFileName.indexOf('_', inputFileName.indexOf('_') + 1));
+                System.out.println(userId);
             }
             if (Settings.isUsingCycles()) {
                 extractFeaturesFromCsvFileToFileUsingCycles(inputFileName, outputFileName + (Settings.getOutputFileType() == Settings.FileType.ARFF ? ".arff" : ".csv"), userId);
@@ -178,15 +180,20 @@ public class FeatureExtractor {
 
         WINSIZE = Settings.getFrameSize();
 
-        for (int i = WINSIZE; i < dataset.size() - WINSIZE; ++i) {  //skipped first frame
+        int skippedFramesCount = Settings.getNumFramesIgnored();
+        for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) { //skipping first and last N frames
+            if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+                break;
+            }
+
             //using the biggest WINSIZE at declaration
             cordX = new double[WINSIZE + 1];
             cordZ = new double[WINSIZE + 1];
             cordY = new double[WINSIZE + 1];
             Amag = new double[WINSIZE + 1];
 
-            while (position < WINSIZE && i < (dataset.size() - WINSIZE)) { //while it is in the same frame 
-                //also skip last step
+            while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
+                //also skip last N frames
                 cordX[position] = dataset.get(i).getX();
                 cordY[position] = dataset.get(i).getY();
                 cordZ[position] = dataset.get(i).getZ();
@@ -208,7 +215,7 @@ public class FeatureExtractor {
                 position++;
 
                 //extracting features from vectors if the frame has ended
-                if (position >= dataset.size() || position >= WINSIZE) { //CHECK TODO
+                if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) { //CHECK TODO
                     //-------FEATURES
                     //min
                     if (cordX.length <= 0) {
@@ -284,11 +291,11 @@ public class FeatureExtractor {
         cyclometer = dataset.get(0).getStep();
 
         int i = 0;
-        while (dataset.get(i).getStep() == cyclometer) { //skipping first step
+        while (dataset.get(i).getStep() <= cyclometer+Settings.getNumStepsIgnored()) { //skipping first N steps
             ++i;
         }
 
-        int lastStep = dataset.get(dataset.size() - 1).getStep();
+        int lastStep = dataset.get(dataset.size() - 1).getStep() - Settings.getNumStepsIgnored(); //first step that is not accepted anymore
         cyclometer++;
         for (; i < dataset.size(); ++i) {
             //using the biggest WINSIZE at declaration
@@ -345,7 +352,7 @@ public class FeatureExtractor {
                             meanX, meanY, meanZ, meanA,
                             stddev(cordX, position, meanX), stddev(cordY, position, meanY), stddev(cordZ, position, meanZ), stddev(Amag, position, meanA),
                             absdif(cordX, position, meanX), absdif(cordY, position, meanY), absdif(cordZ, position, meanZ), absdif(Amag, position, meanA),
-                            (double) zero[0] / position, (double)zero[1] / position, (double) zero[2] / position,
+                            (double) zero[0] / position, (double) zero[1] / position, (double) zero[2] / position,
                             histogram(cordX, position, -1.5 * 9.8, 1.5 * 9.8, bins), histogram(cordY, position, -1.5 * 9.8, 1.5 * 9.8, bins), histogram(cordZ, position, -1.5 * 9.8, 1.5 * 9.8, bins), histogram(Amag, position, 0, 3 * 9.8, bins),
                             userId));
 
@@ -406,11 +413,11 @@ public class FeatureExtractor {
             counter = 0;
             cyclometer = dataset.get(0).getStep();
             int i = 0;
-            while (dataset.get(i).getStep() == cyclometer) { //skipping first step
+            while (dataset.get(i).getStep() <= cyclometer+Settings.getNumStepsIgnored()) { //skipping first N steps
                 ++i;
             }
 
-            int lastStep = dataset.get(dataset.size() - 1).getStep();
+            int lastStep = dataset.get(dataset.size() - 1).getStep() - Settings.getNumStepsIgnored(); //first step that is not accepted anymore
             cyclometer++;
             for (; i < dataset.size(); ++i) {
                 //using the biggest WINSIZE at declaration
@@ -418,6 +425,7 @@ public class FeatureExtractor {
                 cordZ = new double[WINSIZE + 1];
                 cordY = new double[WINSIZE + 1];
                 Amag = new double[WINSIZE + 1];
+                counter=i;
 
                 while (cyclometer == dataset.get(i).getStep() && position < WINSIZE) { //while it is in the same step
                     cordX[position] = dataset.get(i).getX();
@@ -553,14 +561,19 @@ public class FeatureExtractor {
             }
 
             WINSIZE = Settings.getFrameSize();
-
-            for (int i = WINSIZE; i < dataset.size() - WINSIZE; ++i) {  //skipped first frame
+            
+            int skippedFramesCount = Settings.getNumFramesIgnored();
+            for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) { //skipping first and last N frames
+                if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+                    break;
+                }
+                
                 cordX = new double[WINSIZE + 1];
                 cordZ = new double[WINSIZE + 1];
                 cordY = new double[WINSIZE + 1];
                 Amag = new double[WINSIZE + 1];
 
-                while (position < WINSIZE && i < (dataset.size() - WINSIZE)) { //while it is in the same frame 
+                while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
                     //also skip last step
                     cordX[position] = dataset.get(i).getX();
                     cordY[position] = dataset.get(i).getY();
@@ -583,7 +596,7 @@ public class FeatureExtractor {
                     position++;
 
                     //extracting features from vectors if the frame has ended
-                    if (position >= dataset.size() || position >= WINSIZE) {
+                    if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) {
                         //-------FEATURES
                         //min
                         if (cordX.length <= 0) {
@@ -736,18 +749,19 @@ public class FeatureExtractor {
         counter = 0;
 
         int i = 0;
-        while (dataset.get(i).getStep() == cyclometer) { //skipping first step
+        while (dataset.get(i).getStep() <= cyclometer+Settings.getNumStepsIgnored()) { //skipping first N steps
             ++i;
         }
 
-        int lastStep = dataset.get(dataset.size() - 1).getStep();
+        int lastStep = dataset.get(dataset.size() - 1).getStep() - Settings.getNumStepsIgnored(); //first step that is not accepted anymore
         for (; i < dataset.size(); ++i) {
             //using the biggest WINSIZE at declaration
             cordX = new double[WINSIZE + 1];
             cordZ = new double[WINSIZE + 1];
             cordY = new double[WINSIZE + 1];
             Amag = new double[WINSIZE + 1];
-
+            counter=i;
+            
             while (cyclometer == dataset.get(i).getStep() && position < WINSIZE) { //while it is in the same step
                 cordX[position] = dataset.get(i).getX();
                 cordY[position] = dataset.get(i).getY();
@@ -860,14 +874,19 @@ public class FeatureExtractor {
         final int bins = 10;
         int position = 0;  //indicates the position in the cordX,cordY,... arrays
 
-        for (int i = WINSIZE; i < dataset.size() - WINSIZE; ++i) {  //skipped first frame
+        int skippedFramesCount = Settings.getNumFramesIgnored();
+        for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) {//skipping first and last N frames
+            if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+                break;
+            }
+            
             //using the biggest WINSIZE at declaration
             cordX = new double[WINSIZE + 1];
             cordZ = new double[WINSIZE + 1];
             cordY = new double[WINSIZE + 1];
             Amag = new double[WINSIZE + 1];
 
-            while (position < WINSIZE && i < (dataset.size() - WINSIZE)) { //while it is in the same frame 
+            while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
                 //also skip last step
                 cordX[position] = dataset.get(i).getX();
                 cordY[position] = dataset.get(i).getY();
@@ -890,7 +909,7 @@ public class FeatureExtractor {
                 position++;
 
                 //extracting features from vectors if the frame has ended
-                if (position >= dataset.size() || position >= WINSIZE) { //CHECK TODO
+                if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) { //CHECK TODO
                     ///not outOfBounds          not last step                 end of step
                     ///                 because we ignore the last step
                     //-------FEATURES
@@ -1006,22 +1025,25 @@ public class FeatureExtractor {
                 index++;
             }
 
-            int lastStep = dataset.get(dataset.size() - 1).getStep();
             counter = 0;
-            cyclometer = dataset.get(0).getStep();
+            cyclometer = dataset.get(0).getStep()+Settings.getNumStepsIgnored();
 
             int i = 0;
-            while (dataset.get(i).getStep() == cyclometer) { //skipping first step
+            while (dataset.get(i).getStep() < cyclometer) { //skipping first N steps
                 ++i;
             }
-
+            
+            int lastStep = dataset.get(dataset.size() - 1).getStep() - Settings.getNumStepsIgnored(); //first step that is not accepted anymore
+            
             for (; i < dataset.size(); ++i) {
                 //using the biggest WINSIZE at declaration
                 cordX = new double[WINSIZE + 1];
                 cordZ = new double[WINSIZE + 1];
                 cordY = new double[WINSIZE + 1];
                 Amag = new double[WINSIZE + 1];
-
+                counter=i;
+                
+                //System.out.println(i+ " < "+ dataset.size()+ " && " +cyclometer +" == " +dataset.get(i).getStep());
                 while (i < dataset.size() && cyclometer == dataset.get(i).getStep()) { //while it is in the same step
                     cordX[position] = dataset.get(i).getX();
                     cordY[position] = dataset.get(i).getY();
@@ -1043,13 +1065,14 @@ public class FeatureExtractor {
                     i++;
                     position++;
                     counter++;
-
+                    //System.out.println(counter +" < "+ dataset.size() + " && " + cyclometer + " < " + dataset.get(counter).getStep()+ " && " + cyclometer + " < " + lastStep);
                     //extracting features from vectors if the step has ended
                     if (counter < dataset.size() && (cyclometer < dataset.get(counter).getStep() && cyclometer < lastStep)) { //CHECK TODO
                         ///not outOfBounds                          end of step                     not last step 
                         ///                 because we ignore the last step
                         //-------FEATURES
                         //min
+                        //System.out.println(counter + " " + cyclometer);
                         if (cordX.length <= 0) {
                             throw new FeatureExtractorException(TAG + "negative array length");
                         }
@@ -1187,14 +1210,19 @@ public class FeatureExtractor {
 
             WINSIZE = Settings.getFrameSize();
 
-            for (int i = WINSIZE; i < dataset.size() - WINSIZE; ++i) {  //skipped first frame
+            int skippedFramesCount = Settings.getNumFramesIgnored();
+            for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) { //skipping first and last N frames
+                if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+                    break;
+                }
+
                 //using the biggest WINSIZE at declaration
                 cordX = new double[WINSIZE + 1];
                 cordZ = new double[WINSIZE + 1];
                 cordY = new double[WINSIZE + 1];
                 Amag = new double[WINSIZE + 1];
 
-                while (position < WINSIZE && i < (dataset.size() - WINSIZE)) { //while it is in the same frame 
+                while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
                     //also skip last step
                     cordX[position] = dataset.get(i).getX();
                     cordY[position] = dataset.get(i).getY();
@@ -1217,7 +1245,7 @@ public class FeatureExtractor {
                     position++;
 
                     //extracting features from vectors if the frame has ended
-                    if (position >= dataset.size() || position >= WINSIZE) { //CHECK TODO
+                    if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) { //CHECK TODO
                         //-------FEATURES
                         //min
                         if (cordX.length <= 0) {

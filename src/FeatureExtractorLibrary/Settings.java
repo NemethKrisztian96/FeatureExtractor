@@ -38,6 +38,7 @@ public final class Settings {
     private static boolean inputHasHeader = false;
     private static boolean outputHasHeader = false;
     private static int numStepsIgnored = 0;
+    private static int numFramesIgnored = 0;
 
     /**
      * Sets the FeatureExtractor to use cycles instead of fixed frames
@@ -71,7 +72,8 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Checks if the setting are correctly set and returns the proper boolean
+     * value.
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -84,7 +86,7 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Checks if the FeatureExtractor is using cycles instead of fixed frames
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -96,7 +98,7 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Checks if the FeatureExtractor is using fixed frames instead of cycles.
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -108,7 +110,7 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Gets the frame size that the FeatureExtractor is using.
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -123,7 +125,7 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Checks if the FeatureExtractor input file is expected to have a header
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -135,7 +137,7 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Sets the FeatureExtractor to expect an input file that has a header
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -148,7 +150,7 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Checks if the FeatureExtractor output file is expected to have a header
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -160,7 +162,7 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Sets the FeatureExtractor to include a header in the output file
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -173,7 +175,8 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Gets the number of step cycles the FeatureExtractor will ignore from the
+     * input
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -185,7 +188,8 @@ public final class Settings {
     }
 
     /**
-     * Sets the FeatureExtractor to use cycles instead of fixed frames
+     * Sets the number of step cycles the FeatureExtractor will ignore from the
+     * input
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -193,7 +197,39 @@ public final class Settings {
      * @since 23 ‎July, ‎2018
      */
     public static void setNumStepsIgnored(int numStepsIgnored) {
-        Settings.numStepsIgnored = numStepsIgnored;
+        if (numStepsIgnored > 0) {
+            Settings.numStepsIgnored = numStepsIgnored;
+        } else {
+            Settings.numStepsIgnored = 0;
+        }
+    }
+
+    /**
+     * Gets the number of frames the FeatureExtractor will ignore from the input
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @return the number of steps ignored
+     * @since 23 ‎July, ‎2018
+     */
+    public static int getNumFramesIgnored() {
+        return numFramesIgnored;
+    }
+
+    /**
+     * Sets the number of frames the FeatureExtractor will ignore from the input
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @param numFramesIgnored the number of steps ignored
+     * @since 23 ‎July, ‎2018
+     */
+    public static void setNumFramesIgnored(int numFramesIgnored) {
+        if (numFramesIgnored > 0) {
+            Settings.numFramesIgnored = numFramesIgnored;
+        } else {
+            Settings.numFramesIgnored = 0;
+        }
     }
 
     /**

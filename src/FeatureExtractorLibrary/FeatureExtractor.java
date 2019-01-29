@@ -180,9 +180,9 @@ public class FeatureExtractor {
 
         WINSIZE = Settings.getFrameSize();
 
-        int skippedFramesCount = Settings.getNumFramesIgnored();
-        for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) { //skipping first and last N frames
-            if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+        int skippedDataPointsCount = Settings.getNumFramesIgnored() * Settings.getFrameSize();
+        for (int i = skippedDataPointsCount; i < dataset.size() - skippedDataPointsCount; ++i) { //skipping first and last N frames
+            if (dataset.size() - skippedDataPointsCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
                 break;
             }
 
@@ -192,7 +192,7 @@ public class FeatureExtractor {
             cordY = new double[WINSIZE + 1];
             Amag = new double[WINSIZE + 1];
 
-            while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
+            while (position < WINSIZE && i < (dataset.size() - skippedDataPointsCount)) { //while it is in the same frame 
                 //also skip last N frames
                 cordX[position] = dataset.get(i).getX();
                 cordY[position] = dataset.get(i).getY();
@@ -215,7 +215,7 @@ public class FeatureExtractor {
                 position++;
 
                 //extracting features from vectors if the frame has ended
-                if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) { //CHECK TODO
+                if (position >= (dataset.size() - skippedDataPointsCount) || position >= WINSIZE) { //CHECK TODO
                     //-------FEATURES
                     //min
                     if (cordX.length <= 0) {
@@ -562,9 +562,9 @@ public class FeatureExtractor {
 
             WINSIZE = Settings.getFrameSize();
             
-            int skippedFramesCount = Settings.getNumFramesIgnored();
-            for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) { //skipping first and last N frames
-                if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+            int skippedDataPointsCount = Settings.getNumFramesIgnored() * Settings.getFrameSize();
+            for (int i = skippedDataPointsCount; i < dataset.size() - skippedDataPointsCount; ++i) { //skipping first and last N frames
+                if (dataset.size() - skippedDataPointsCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
                     break;
                 }
                 
@@ -573,7 +573,7 @@ public class FeatureExtractor {
                 cordY = new double[WINSIZE + 1];
                 Amag = new double[WINSIZE + 1];
 
-                while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
+                while (position < WINSIZE && i < (dataset.size() - skippedDataPointsCount)) { //while it is in the same frame 
                     //also skip last step
                     cordX[position] = dataset.get(i).getX();
                     cordY[position] = dataset.get(i).getY();
@@ -596,7 +596,7 @@ public class FeatureExtractor {
                     position++;
 
                     //extracting features from vectors if the frame has ended
-                    if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) {
+                    if (position >= (dataset.size() - skippedDataPointsCount) || position >= WINSIZE) {
                         //-------FEATURES
                         //min
                         if (cordX.length <= 0) {
@@ -874,9 +874,9 @@ public class FeatureExtractor {
         final int bins = 10;
         int position = 0;  //indicates the position in the cordX,cordY,... arrays
 
-        int skippedFramesCount = Settings.getNumFramesIgnored();
-        for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) {//skipping first and last N frames
-            if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+        int skippedDataPointsCount = Settings.getNumFramesIgnored() * Settings.getFrameSize();
+        for (int i = skippedDataPointsCount; i < dataset.size() - skippedDataPointsCount; ++i) {//skipping first and last N frames
+            if (dataset.size() - skippedDataPointsCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
                 break;
             }
             
@@ -886,7 +886,7 @@ public class FeatureExtractor {
             cordY = new double[WINSIZE + 1];
             Amag = new double[WINSIZE + 1];
 
-            while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
+            while (position < WINSIZE && i < (dataset.size() - skippedDataPointsCount)) { //while it is in the same frame 
                 //also skip last step
                 cordX[position] = dataset.get(i).getX();
                 cordY[position] = dataset.get(i).getY();
@@ -909,7 +909,7 @@ public class FeatureExtractor {
                 position++;
 
                 //extracting features from vectors if the frame has ended
-                if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) { //CHECK TODO
+                if (position >= (dataset.size() - skippedDataPointsCount) || position >= WINSIZE) { //CHECK TODO
                     ///not outOfBounds          not last step                 end of step
                     ///                 because we ignore the last step
                     //-------FEATURES
@@ -1210,9 +1210,9 @@ public class FeatureExtractor {
 
             WINSIZE = Settings.getFrameSize();
 
-            int skippedFramesCount = Settings.getNumFramesIgnored();
-            for (int i = skippedFramesCount; i < dataset.size() - skippedFramesCount; ++i) { //skipping first and last N frames
-                if (dataset.size() - skippedFramesCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
+            int skippedDataPointsCount = Settings.getNumFramesIgnored()  * Settings.getFrameSize();
+            for (int i = skippedDataPointsCount; i < dataset.size() - skippedDataPointsCount; ++i) { //skipping first and last N frames
+                if (dataset.size() - skippedDataPointsCount - i < WINSIZE) { //skip the part frames (last acceptable frame)
                     break;
                 }
 
@@ -1222,7 +1222,7 @@ public class FeatureExtractor {
                 cordY = new double[WINSIZE + 1];
                 Amag = new double[WINSIZE + 1];
 
-                while (position < WINSIZE && i < (dataset.size() - skippedFramesCount)) { //while it is in the same frame 
+                while (position < WINSIZE && i < (dataset.size() - skippedDataPointsCount)) { //while it is in the same frame 
                     //also skip last step
                     cordX[position] = dataset.get(i).getX();
                     cordY[position] = dataset.get(i).getY();
@@ -1245,7 +1245,7 @@ public class FeatureExtractor {
                     position++;
 
                     //extracting features from vectors if the frame has ended
-                    if (position >= (dataset.size() - skippedFramesCount) || position >= WINSIZE) { //CHECK TODO
+                    if (position >= (dataset.size() - skippedDataPointsCount) || position >= WINSIZE) { //CHECK TODO
                         //-------FEATURES
                         //min
                         if (cordX.length <= 0) {

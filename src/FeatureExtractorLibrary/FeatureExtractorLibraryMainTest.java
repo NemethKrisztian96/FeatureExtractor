@@ -36,33 +36,36 @@ public class FeatureExtractorLibraryMainTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Settings.usingFrames(128);
+        //Settings.usingFrames(128);
+        String IOFolder = "../FeatureExtractorLibrary_IO_files/";
         /*try {
             FeatureExtractor.extractFeaturesFromCsvFileToCsvFile("in1.csv","out2.csv");
         } catch (FeatureExtractorException ex) {
             Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
         }*/
-        try {
-            /*try {
+        //try {
+            try {
             Settings.setOutputHasHeader(true);
             Settings.setOutputFileType(Settings.FileType.ARFF);
-            FeatureExtractor.extractFeaturesFromCsvFileToFile("data_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810.csv", "features_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810");
+            Settings.usingCycles();
+            //Settings.setNumStepsIgnored(2);
+            FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + "rawdata_WsY044SgeaeZtDrQKVpRyWpo7hx1_20181212_000000.csv", IOFolder + "features_WsY044SgeaeZtDrQKVpRyWpo7hx1_20181212_000000");
             } catch (FeatureExtractorException ex) {
             Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            try {
+            /*try {
             //Settings.setOutputHasHeader(true);
             Settings.setDefaultUserId("dasdsaa");
             Settings.setOutputFileType(Settings.FileType.CSV);
             FeatureExtractor.extractFeaturesFromCsvFileToFile("rawdata_in11.csv", "features_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700");
             } catch (FeatureExtractorException ex) {
-            Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
             }*/
-            System.out.println((new Util()).arrayListOfFeaturesToInstances(FeatureExtractor.extractFeaturesFromCsvFileToArrayListOfFeatures("rawdata_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700.csv")));
-        } catch (FeatureExtractorException ex) {
-            Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            //System.out.println((new Util()).arrayListOfFeaturesToInstances(FeatureExtractor.extractFeaturesFromCsvFileToArrayListOfFeatures("rawdata_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700.csv")));
+        //} catch (FeatureExtractorException ex) {
+            //Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
+        //}
         System.out.println("done");
         System.out.println(Settings.getAllSettings());
         /*

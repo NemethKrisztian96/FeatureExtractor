@@ -36,7 +36,7 @@ public class FeatureExtractorLibraryMainTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //Settings.usingFrames(128);
+        Settings.usingFrames(128);
         String IOFolder = "../FeatureExtractorLibrary_IO_files/";
         /*try {
             FeatureExtractor.extractFeaturesFromCsvFileToCsvFile("in1.csv","out2.csv");
@@ -47,9 +47,10 @@ public class FeatureExtractorLibraryMainTest {
             try {
             Settings.setOutputHasHeader(true);
             Settings.setOutputFileType(Settings.FileType.ARFF);
-            Settings.usingCycles();
+            //Settings.usingCycles();
             //Settings.setNumStepsIgnored(2);
-            FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + "rawdata_WsY044SgeaeZtDrQKVpRyWpo7hx1_20181212_000000.csv", IOFolder + "features_WsY044SgeaeZtDrQKVpRyWpo7hx1_20181212_000000");
+            //Settings.setNumFramesIgnored(2);
+            FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + "rawdata_WsY044SgeaeZtDrQKVpRyWpo7hx1_20181212_133019.csv", IOFolder + "features_WsY044SgeaeZtDrQKVpRyWpo7hx1_20181212_133019");
             } catch (FeatureExtractorException ex) {
             Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
             }

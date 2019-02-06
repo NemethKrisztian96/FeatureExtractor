@@ -300,7 +300,7 @@ public final class Settings {
 
         if (isUsingCycles()) {
             sb.append("\tFeatureExtractor is using cycles\n");
-            sb.append("\tNumber of cycles ignored ");
+            sb.append("\tNumber of step cycles ignored ");
             sb.append(numStepsIgnored);
             sb.append("\n");
         }

@@ -300,11 +300,17 @@ public final class Settings {
 
         if (isUsingCycles()) {
             sb.append("\tFeatureExtractor is using cycles\n");
+            sb.append("\tNumber of cycles ignored ");
+            sb.append(numStepsIgnored);
+            sb.append("\n");
         }
         if (isUsingFrames()) {
             sb.append("\tFeatureExtractor is using frames\n");
             sb.append("\t\tThe frame size is ");
             sb.append(frameSize);
+            sb.append("\n");
+            sb.append("\tNumber of frames ignored ");
+            sb.append(numFramesIgnored);
             sb.append("\n");
         }
         sb.append("\tOutputFileType: ");

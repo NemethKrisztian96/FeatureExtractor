@@ -40,10 +40,12 @@ public class FeatureExtractorLibraryMainTest {
 
         //THESE ARE ALL JUST TEST
         //THEY CAN GIVE YOU INSIGHT ABOUT THE LIBRARY'S USAGE
+
         //String IOFolder = "../FeatureExtractorLibrary_IO_files/";
         String IOFolder = "data/";
         String inputFileName = "data_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810.csv";
         String outputFileName = "features_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810";
+        
         //settings regarding the input and output files
         Settings.setInputHasHeader(true); //input has a header that has to be skipped
         Settings.setOutputHasHeader(true); //output will have a header
@@ -53,6 +55,7 @@ public class FeatureExtractorLibraryMainTest {
         //if we would like to use walking cycles based feature extraction
         //Settings.usingCycles(); 
         //Settings.setNumStepsIgnored(1); //ignoring first and last step
+        
         //if we would like to use walking cycles based feature extraction
         Settings.usingFrames(128); //using frames made of 128 datapoints
         Settings.setNumFramesIgnored(2); //ignoring first and last 2 frames (256 datapoints in this scenario)
@@ -107,7 +110,7 @@ public class FeatureExtractorLibraryMainTest {
         try {
             //extracting into a file
             FeatureExtractor.extractFeaturesFromArrayListToFile(dataset, outputFileName, Settings.getDefaultUserId());
-            
+
             //extracting into a list
             List<Feature> featureList2 = FeatureExtractor.extractFeaturesFromArrayListToArrayListOfFeatures(dataset, Settings.getDefaultUserId());
             //System.out.println(featureList2);

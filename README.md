@@ -20,7 +20,7 @@ You can also find more detailed description about the usage of different compone
 A usage example with minimal settings would be:
 ```java
 Settings.usingFrames(128); 
-//or Settings,usingCycles(); 
+//or Settings.usingCycles(); 
 try {
     FeatureExtractor.extractFeaturesFromCsvFileToFile("data/rawdataFile", "outputFile");
 } catch (FeatureExtractorException ex) {

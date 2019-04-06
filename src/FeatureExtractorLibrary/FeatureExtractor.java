@@ -1466,7 +1466,7 @@ public class FeatureExtractor {
         header.append("}\n\n");
 
         header.append("@data\n");
-        System.out.println(header);
+
         return header.toString();
     }
 

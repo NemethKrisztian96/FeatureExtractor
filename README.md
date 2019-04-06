@@ -12,10 +12,14 @@ javac *.java
 
 You can run the program if you modify the main function from `FeatureExtractorLibraryMainTest` class according to your needs or of you include the library in your project as a *.jar* dependency. For the latter you can use the `FeatureExtractorLibrary.jar` file present in the root of the repo.
 
+## Javadoc
+
+The javadoc present in the docs/ folder can also be accessed at https://nemethkrisztian96.github.io/FeatureExtractor/.
+
 ## Usage
 
 The library's main functions can be used by calling the public methods from "FeatureExtractor" class. 
-You can also find more detailed description about the usage of different component classes and methods in the javadoc present in the `docs/` folder which can also be accessed at https://nemethkrisztian96.github.io/FeatureExtractor/.
+You can find more detailed description about the usage of different component classes and methods in the previously mentioned Javadoc you can access at https://nemethkrisztian96.github.io/FeatureExtractor/.
 
 A usage example with minimal settings would be:
 ```java

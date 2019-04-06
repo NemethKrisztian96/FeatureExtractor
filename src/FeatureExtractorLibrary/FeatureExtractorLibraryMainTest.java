@@ -7,6 +7,7 @@ package FeatureExtractorLibrary;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,7 +26,8 @@ public class FeatureExtractorLibraryMainTest {
 
     /**
      * This is the function that contains invocations of the FeatureExtractor
-     * class functions with the specified settings
+     * class functions with the specified settings, also containing a more
+     * detailed usage example
      *
      * @author Krisztian Nemeth
      * @version 1.0
@@ -33,14 +35,13 @@ public class FeatureExtractorLibraryMainTest {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
-        //THESE ARE ALL JUST TEST
-        //THEY CAN GIVE YOU INSIGHT ABOUT THE LIBRARY'S USAGE
-
-        //String IOFolder = "../FeatureExtractorLibrary_IO_files/";
-        String IOFolder = "data/";
-        String inputFileName = "data_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810.csv";
-        String outputFileName = "features_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810";
+        //preprocessingTest();
+        //TestUsageExamples();
+        
+        
+        String IOFolder = "../FeatureExtractorLibrary_IO_files/";
+        String inputFileName = "rawdata_complex_sample.csv";
+        String outputFileName = "features_rawdata_complex_sample";
         
         //settings regarding the input and output files
         Settings.setInputHasHeader(true); //input has a header that has to be skipped
@@ -56,13 +57,57 @@ public class FeatureExtractorLibraryMainTest {
         Settings.usingFrames(128); //using frames made of 128 datapoints
         Settings.setNumFramesIgnored(2); //ignoring first and last 2 frames (256 datapoints in this scenario)
 
+        Settings.usingPreprocessing(true);
+        Settings.setUseDynamicPreprocessingThreshold(true);
+        Settings.setPreprocessingInterval(128);
+        
+        //now based on the previous settings we are extracting features from the input file
+        try {
+            //extracting into a file
+            FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + inputFileName, IOFolder + outputFileName);
+
+            //extracting into a list
+            //List<Feature> featureList = FeatureExtractor.extractFeaturesFromCsvFileToArrayListOfFeatures(IOFolder + inputFileName);
+            //System.out.println(featureList);
+        } catch (FeatureExtractorException ex) {
+            Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void TestUsageExamples(){
+        //THESE ARE ALL JUST TESTS
+        //THEY CAN GIVE YOU INSIGHT ABOUT THE LIBRARY'S USAGE
+
+        //String IOFolder = "../FeatureExtractorLibrary_IO_files/";
+        String IOFolder = "data/";
+        String inputFileName = "data_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810.csv";
+        String outputFileName = "features_data_ttJMxBAjuHNVLCKhaXNvBTFDbIc2_20181122_161810";
+        
+        //settings regarding the input and output files
+        Settings.setInputHasHeader(true); //input has a header that has to be skipped
+        Settings.setOutputHasHeader(true); //output will have a header
+        Settings.setOutputFileType(Settings.FileType.ARFF); //output will be an .arff file
+        Settings.setDefaultUserId("dummy");
+
+        //if we would like to use walking cycles based feature extraction
+        //Settings.usingCycles(); 
+        //Settings.setNumStepsIgnored(1); //ignoring first and last step
+        
+        //if we would like to use walking cycles based feature extraction
+        Settings.usingFrames(128); //using frames made of 128 datapoints
+        Settings.setNumFramesIgnored(2); //ignoring first and last 2 frames (256 datapoints in this scenario)
+
+        Settings.usingPreprocessing(true);
+        Settings.setUseDynamicPreprocessingThreshold(true);
+        Settings.setPreprocessingInterval(128);
+        
         //now based on the previous settings we are extracting features from the input file
         try {
             //extracting into a file
             FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + inputFileName, outputFileName);
 
             //extracting into a list
-            List<Feature> featureList = FeatureExtractor.extractFeaturesFromCsvFileToArrayListOfFeatures(IOFolder + inputFileName);
+            //List<Feature> featureList = FeatureExtractor.extractFeaturesFromCsvFileToArrayListOfFeatures(IOFolder + inputFileName);
             //System.out.println(featureList);
         } catch (FeatureExtractorException ex) {
             Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,4 +159,88 @@ public class FeatureExtractorLibraryMainTest {
             Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    private static void preprocessingTest() {
+        String IOFolder = "../FeatureExtractorLibrary_IO_files/";
+        String inputFileName = "rawdata_complex_sample.csv";
+        String outputFileName = "test_features_complex_sample";
+        String preprocessedInputFileName = "preprocessed_rawdata_complex_sample.csv";
+        String preprocessedOutputFileName = "test_features_preprocessed_complex_sample";
+
+        Settings.setInputHasHeader(false); //input has a header that has to be skipped
+        Settings.setOutputHasHeader(true); //output will have a header
+        Settings.setOutputFileType(Settings.FileType.CSV); //output will be an .csv file
+        Settings.setDefaultUserId("dummy");
+
+        Settings.usingFrames(128); //using frames made of 128 datapoints
+        //Settings.setNumFramesIgnored(2); //ignoring first and last 2 frames (256 datapoints in this scenario)
+
+        //preprocessing
+        Settings.usingPreprocessing(true);
+        //Settings.setPreprocessingThreshold(10);
+        Settings.setUseDynamicPreprocessingThreshold(true);
+        //Settings.setPreprocessingThreshold(10);
+        Settings.setPreprocessingInterval(128);
+
+        //preprocessJustTheFile(IOFolder, inputFileName, preprocessedInputFileName);
+
+        //extracting features from the input file
+        /*try {
+            FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + inputFileName, IOFolder + outputFileName);
+            
+            Settings.usingPreprocessing(false);
+            FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + preprocessedInputFileName, IOFolder + preprocessedOutputFileName);
+        } catch (FeatureExtractorException ex) {
+            Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+    }
+
+    //in order to use this, you must change "preprocess" function's visibility modifier to public in FeatureExtractor
+//    private static void preprocessJustTheFile(String IOFolder, String inputFileName, String outputFileName) {
+//        Scanner scanner = null;
+//        try {
+//            scanner = new Scanner(new File(IOFolder + inputFileName));
+//        } catch (FileNotFoundException ex) {
+//            System.out.println("Unable to open file " + IOFolder + inputFileName);
+//            System.exit(1);
+//        }
+//
+//        if (Settings.getInputHasHeader() && scanner.hasNextLine()) {
+//            scanner.nextLine();
+//        }
+//
+//        List<Accelerometer> dataset = new ArrayList<>();
+//        while (scanner.hasNextLine()) {  //lines starting the first index 
+//
+//            String line = scanner.nextLine().trim();
+//
+//            if (line.isEmpty()) {
+//                continue;
+//            }
+//            String items[] = line.split(",");
+//            if (items.length != 5) {
+//                System.out.println("Corrupted input file error");
+//                return;
+//            }
+//            dataset.add(new Accelerometer(Long.parseLong(items[0]), //timesptamp
+//                    Double.parseDouble(items[1]), //X
+//                    Double.parseDouble(items[2]), //Y
+//                    Double.parseDouble(items[3]), //Z
+//                    Integer.parseInt(items[4])));                    //stepNumber
+//        }
+//
+//        dataset = FeatureExtractor.preprocess(dataset);
+//
+//        PrintStream writer = null;
+//
+//        try {
+//            writer = new PrintStream(IOFolder + outputFileName);
+//        } catch (FileNotFoundException ex) {
+//            ex.printStackTrace();
+//        }
+//
+//        for (Accelerometer accel : dataset) {
+//            writer.println(accel.getTimeStamp() + "," + accel.getX() + "," + accel.getY() + "," + accel.getZ() + "," + accel.getStep());
+//        }
+//    }
 }

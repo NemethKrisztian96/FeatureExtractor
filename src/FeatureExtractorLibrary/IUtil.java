@@ -6,6 +6,7 @@
 package FeatureExtractorLibrary;
 
 import java.util.ArrayList;
+import java.util.List;
 import weka.core.Instances;
 
 /**
@@ -24,4 +25,6 @@ public interface IUtil {
      * @since 23 ‎July, ‎2018
      */
     public Instances arrayListOfFeaturesToInstances(ArrayList<Feature> features);
+
+    public List<Accelerometer> preprocess(List<Accelerometer> inputData);
 }

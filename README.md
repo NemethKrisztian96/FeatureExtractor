@@ -44,7 +44,7 @@ Please make sure to update tests as appropriate.
 
 ## Authors and acknowledgment
 
-This project has been made by Nemeth Krisztian-Miklos, under the careful supervision of prof. dr. Antal Margit from Sapientia Hungarian University of Transylvania.
+This project has been made by Nemeth Krisztian-Miklos, under the careful supervision of dr. Antal Margit from Sapientia Hungarian University of Transylvania.
 
 
 ## License

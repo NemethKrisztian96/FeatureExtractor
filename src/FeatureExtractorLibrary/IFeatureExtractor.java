@@ -27,7 +27,7 @@ public interface IFeatureExtractor {
      * @return ArrayList containing the resulting Feature objects
      * @since 23 ‎July, ‎2018
      */
-    public ArrayList<Feature> extractFeaturesFromArrayListToArrayListOfFeatures(ArrayList<Accelerometer> dataset, String userId);
+    //public ArrayList<Feature> extractFeaturesFromArrayListToArrayListOfFeatures(ArrayList<Accelerometer> dataset, String userId);
 
     /**
      * Extracts features from the dataset into a file that's type is specified
@@ -40,7 +40,7 @@ public interface IFeatureExtractor {
      * @param filename output file name that will contain the features
      * @since 23 ‎July, ‎2018
      */
-    public void extractFeaturesFromArrayListToFile(ArrayList<Accelerometer> dataset, String userId, String filename);
+    //public void extractFeaturesFromArrayListToFile(ArrayList<Accelerometer> dataset, String userId, String filename);
 
     /**
      * Extracts features from the given file.
@@ -52,7 +52,7 @@ public interface IFeatureExtractor {
      * @return ArrayList containing the resulting Feature objects
      * @since 23 ‎July, ‎2018
      */
-    public ArrayList<Feature> extractFeaturesFromCsvFileToArrayListOfFeatures(String inputFileName);
+    //public ArrayList<Feature> extractFeaturesFromCsvFileToArrayListOfFeatures(String inputFileName);
 
     /**
      * Extracts features from the given file to an output file that's type is
@@ -64,5 +64,5 @@ public interface IFeatureExtractor {
      * @param outputFileName output file name that will contain the features
      * @since 23 ‎July, ‎2018
      */
-    public void extractFeaturesFromCsvFileToFile(String inputFileName, String outputFileName);
+    //public void extractFeaturesFromCsvFileToFile(String inputFileName, String outputFileName);
 }

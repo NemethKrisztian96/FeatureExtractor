@@ -45,7 +45,8 @@ public final class Settings {
     private static boolean useDynamicPreprocessingThreshold = false;
     private static double preprocessingThreshold = 0;
     private static int preprocessingInterval = 0; //the length of the interval that will be cut out
-    private static double histogramGravityMultiplier = GRAVITY;
+    private static double histogramGravityMultiplier = 1.5;
+    //private static boolean orientationIndependent = false;
 
     /**
      * Sets the FeatureExtractor to use cycles instead of fixed frames
@@ -323,8 +324,16 @@ public final class Settings {
         sb.append("\tOutputFileType: ");
         sb.append(getOutputFileType() == FileType.ARFF ? ".arff" : ".csv");
         sb.append("\n");
-        sb.append("\tThe input file has a header\n");
-        sb.append("\tThe output file has a header\n");
+        if (inputHasHeader) {
+            sb.append("\tThe input file has a header\n");
+        }
+        if (outputHasHeader) {
+            sb.append("\tThe output file has a header\n");
+        }
+        if (preprocessing) {
+            sb.append("\tThe input is preprocessed with " + preprocessingThreshold + " threshold and " + preprocessingInterval + " interval\n");
+        }
+        //TODO normalize + orientation
         return sb.toString();
     }
 
@@ -471,5 +480,37 @@ public final class Settings {
             Settings.histogramGravityMultiplier = 1;
         }
         Settings.histogramGravityMultiplier = histogramGravityMultiplier;
+    }
+
+    /**
+     * Sets multiple settings, like the use of 128 data point frames or
+     * preprocessing, for easier use.
+     */
+    public static void useRecommendedSettingsWithFrames() {
+        usingFrames(128);
+        setNumFramesIgnored(1);
+        usingPreprocessing(true);
+        setUseDynamicPreprocessingThreshold(true);
+        setPreprocessingInterval(100);
+        Settings.setInputHasHeader(true);
+        Settings.setOutputHasHeader(true);
+        Settings.setOutputFileType(Settings.FileType.ARFF);
+        Settings.setDefaultUserId("dummy");
+    }
+
+    /**
+     * Sets multiple settings, like the use of cycles or preprocessing, for
+     * easier use.
+     */
+    public static void useRecommendedSettingsWithCycles() {
+        usingCycles();
+        setNumStepsIgnored(1);
+        usingPreprocessing(true);
+        setUseDynamicPreprocessingThreshold(true);
+        setPreprocessingInterval(100);
+        Settings.setInputHasHeader(true);
+        Settings.setOutputHasHeader(true);
+        Settings.setOutputFileType(Settings.FileType.ARFF);
+        Settings.setDefaultUserId("dummy");
     }
 }

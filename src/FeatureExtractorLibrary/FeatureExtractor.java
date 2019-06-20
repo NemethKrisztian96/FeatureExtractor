@@ -885,7 +885,7 @@ public class FeatureExtractor implements IFeatureExtractor {
         return userId;
     }
     
-    private static String getFilenameWithoutExtension(String filename){
+    public static String getFilenameWithoutExtension(String filename){
         int lastslash = filename.lastIndexOf("/");
         int lastbackslash = filename.lastIndexOf("\\");
         //stripping path from filename
@@ -893,7 +893,7 @@ public class FeatureExtractor implements IFeatureExtractor {
         String file = filename.substring((lastslash > lastbackslash ? lastslash : lastbackslash) + 1);
         int index = file.lastIndexOf(".");
         if (index > 0) {   //might have extension
-            filename = filename.substring(0, filename.lastIndexOf("."));
+            file = file.substring(0, index);
         }
         return path+file;
     }

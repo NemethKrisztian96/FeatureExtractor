@@ -10,8 +10,11 @@ import java.util.List;
 import weka.core.Instances;
 
 /**
+ * A class containing useful methods
  *
- * @author claudiu
+ * @author Krisztian Nemeth
+ * @version 1.0
+ * @since 23 ‎July, ‎2018
  */
 public interface IUtil {
 

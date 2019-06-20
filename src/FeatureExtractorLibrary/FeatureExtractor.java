@@ -16,7 +16,7 @@ import java.util.Scanner;
  * @version 1.0
  * @since 23 ‎July, ‎2018
  */
-public class FeatureExtractor implements IFeatureExtractor{
+public class FeatureExtractor implements IFeatureExtractor {
 
     private static final String TAG = "FeatureExtractor - ";
     private static StringBuilder dataString = new StringBuilder();
@@ -90,9 +90,7 @@ public class FeatureExtractor implements IFeatureExtractor{
             throw new FeatureExtractorException(TAG + "incorrect filename");
         }
         if (Settings.settingsAreSet()) {
-            if (filename.lastIndexOf(".") > 0) {   //remove extension
-                filename = filename.substring(0, filename.lastIndexOf("."));
-            }
+            filename = getFilenameWithoutExtension(filename);
             if (Settings.isUsingCycles()) {
                 extractFeaturesFromArrayListToFileUsingCycles(dataset, userId, filename + (Settings.getOutputFileType() == Settings.FileType.ARFF ? ".arff" : ".csv"));
             } else {
@@ -119,10 +117,7 @@ public class FeatureExtractor implements IFeatureExtractor{
      */
     public static ArrayList<Feature> extractFeaturesFromCsvFileToArrayListOfFeatures(String inputFileName) throws FeatureExtractorException {
         if (Settings.settingsAreSet()) {
-            String userId = Settings.getDefaultUserId();
-            if (inputFileName.matches("[A-Za-z0-9]+_[A-Za-z0-9]+_.*")) {
-                userId = inputFileName.substring(inputFileName.indexOf('_') + 1, inputFileName.indexOf('_', inputFileName.indexOf('_') + 1));
-            }
+            String userId = extractUserIdFromFileName(inputFileName);
             if (Settings.isUsingCycles()) {
                 return extractFeaturesFromCsvFileToArrayListOfFeaturesUsingCycles(inputFileName, userId);
             } else {
@@ -152,14 +147,8 @@ public class FeatureExtractor implements IFeatureExtractor{
      */
     public static void extractFeaturesFromCsvFileToFile(String inputFileName, String outputFileName) throws FeatureExtractorException {
         if (Settings.settingsAreSet() && !inputFileName.isEmpty() && !outputFileName.isEmpty()) {
-            String userId = Settings.getDefaultUserId();
-            if (inputFileName.matches("[A-Za-z0-9]+_[A-Za-z0-9]+_.*")) {
-                userId = inputFileName.substring(inputFileName.indexOf('_') + 1, inputFileName.indexOf('_', inputFileName.indexOf('_') + 1));
-                System.out.println("UserId found in filename: " + userId);
-            }
-            if (outputFileName.lastIndexOf(".") > 1) {   //remove extension
-                outputFileName = outputFileName.substring(0, outputFileName.lastIndexOf("."));
-            }
+            String userId = extractUserIdFromFileName(inputFileName);
+            outputFileName = getFilenameWithoutExtension(outputFileName);
             if (Settings.isUsingCycles()) {
                 extractFeaturesFromCsvFileToFileUsingCycles(inputFileName, outputFileName + (Settings.getOutputFileType() == Settings.FileType.ARFF ? ".arff" : ".csv"), userId);
             } else {
@@ -233,7 +222,7 @@ public class FeatureExtractor implements IFeatureExtractor{
                         throw new FeatureExtractorException(TAG + "negative array length");
                     }
                     features.add(createFeature(cordX, cordY, cordZ, Amag, position, zero, bins, userId));
-                    
+
                     zero[0] = zero[1] = zero[2] = 0;
                     cordX = new double[WINSIZE + 1];
                     cordZ = new double[WINSIZE + 1];
@@ -330,7 +319,7 @@ public class FeatureExtractor implements IFeatureExtractor{
                     }
 
                     features.add(createFeature(cordX, cordY, cordZ, Amag, position, zero, bins, userId));
-                    
+
                     zero[0] = zero[1] = zero[2] = 0;
                     cordX = new double[WINSIZE + 1];
                     cordZ = new double[WINSIZE + 1];
@@ -437,7 +426,7 @@ public class FeatureExtractor implements IFeatureExtractor{
                         }
 
                         fillDataStringWithFeature(cordX, cordY, cordZ, Amag, position, zero, bins, userId);
-                        
+
                         //writing to file
                         appendToFile(writer, dataString);
 
@@ -521,7 +510,7 @@ public class FeatureExtractor implements IFeatureExtractor{
                         }
 
                         fillDataStringWithFeature(cordX, cordY, cordZ, Amag, position, zero, bins, userId);
-                        
+
                         //writing to file
                         appendToFile(writer, dataString);
 
@@ -539,7 +528,7 @@ public class FeatureExtractor implements IFeatureExtractor{
 
     private static ArrayList<Feature> extractFeaturesFromCsvFileToArrayListOfFeaturesUsingCycles(String inputFileName, String userId) throws FeatureExtractorException {
         List<Accelerometer> dataset = readDatasetFromCsv(inputFileName);
-        
+
         return extractFeaturesFromArrayListToArrayListOfFeaturesUsingCycles(dataset, userId);
     }
 
@@ -551,7 +540,7 @@ public class FeatureExtractor implements IFeatureExtractor{
 
     private static void extractFeaturesFromCsvFileToFileUsingCycles(String inputFileName, String outputFileName, String userId) throws FeatureExtractorException {
         List<Accelerometer> dataset = readDatasetFromCsv(inputFileName);
-        
+
         extractFeaturesFromArrayListToFileUsingCycles(dataset, userId, outputFileName);
     }
 
@@ -758,8 +747,8 @@ public class FeatureExtractor implements IFeatureExtractor{
         str += histo[length - 1];
         return str;
     }
-    
-    private static Feature createFeature(double[] cordX, double[] cordY, double[] cordZ, double[] Amag, int dataLength, int[] zero, int bins, String userId) throws FeatureExtractorException{
+
+    private static Feature createFeature(double[] cordX, double[] cordY, double[] cordZ, double[] Amag, int dataLength, int[] zero, int bins, String userId) throws FeatureExtractorException {
         double minX = min(cordX, dataLength);
         double minY = min(cordY, dataLength);
         double minZ = min(cordZ, dataLength);
@@ -779,11 +768,11 @@ public class FeatureExtractor implements IFeatureExtractor{
                 userId);                   ///-Settings.c_G*G, Settings.c_G*G                                                                                                                                      0, 2*Settings.c_G*G
         return feature;
     }
-    
-    private static void fillDataStringWithFeature(double[] cordX, double[] cordY, double[] cordZ, double[] Amag, int dataLength, int[] zero, int bins, String userId) throws FeatureExtractorException{
+
+    private static void fillDataStringWithFeature(double[] cordX, double[] cordY, double[] cordZ, double[] Amag, int dataLength, int[] zero, int bins, String userId) throws FeatureExtractorException {
         //empty datastring first
         dataString.delete(0, dataString.length());
-        
+
         double minX = min(cordX, dataLength);
         double minY = min(cordY, dataLength);
         double minZ = min(cordZ, dataLength);
@@ -846,8 +835,8 @@ public class FeatureExtractor implements IFeatureExtractor{
 
         dataString.append(userId);
     }
-    
-    private static List<Accelerometer> readDatasetFromCsv(String inputFileName) throws FeatureExtractorException{
+
+    private static List<Accelerometer> readDatasetFromCsv(String inputFileName) throws FeatureExtractorException {
         Scanner scanner = null;
         try {
             scanner = new Scanner(new File(inputFileName));
@@ -877,7 +866,35 @@ public class FeatureExtractor implements IFeatureExtractor{
                     Double.parseDouble(items[3]),
                     Integer.parseInt(items[4])));
         }
-        
+
         return dataset;
+    }
+    
+    private static String extractUserIdFromFileName(String inputFileName){
+        String userId = Settings.getDefaultUserId();
+        int lastslash = inputFileName.lastIndexOf("/");
+        int lastbackslash = inputFileName.lastIndexOf("\\");
+        String filename = inputFileName.substring((lastslash > lastbackslash ? lastslash : lastbackslash) + 1);
+        if (filename.matches("[A-Za-z0-9]+_[A-Za-z0-9]+_.*")) {
+            userId = filename.substring(filename.indexOf('_') + 1, filename.indexOf('_', filename.indexOf('_') + 1));
+            System.out.println("UserId found in filename: " + userId);
+        }
+        else{
+            System.out.println("UserId not found in filename; assigning default UserId");
+        }
+        return userId;
+    }
+    
+    private static String getFilenameWithoutExtension(String filename){
+        int lastslash = filename.lastIndexOf("/");
+        int lastbackslash = filename.lastIndexOf("\\");
+        //stripping path from filename
+        String path = filename.substring(0, (lastslash > lastbackslash ? lastslash : lastbackslash) + 1);
+        String file = filename.substring((lastslash > lastbackslash ? lastslash : lastbackslash) + 1);
+        int index = file.lastIndexOf(".");
+        if (index > 0) {   //might have extension
+            filename = filename.substring(0, filename.lastIndexOf("."));
+        }
+        return path+file;
     }
 }

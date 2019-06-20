@@ -38,35 +38,20 @@ public class FeatureExtractorLibraryMainTest {
         //TestUsageExamples();
 
         String IOFolder = "../FeatureExtractorLibrary_IO_files/";
-        String inputFileName = "test1rawdata_6T2NePdIGOPBQLemTENrJLkGgiR2.csv";
-        String outputFileName = "features_test1_rawdata_6T2NePdIGOPBQLemTENrJLkGgiR2";
+        String inputFileName = "rawdata_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700.csv";
+        String outputFileName = "features_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700";
 
-        //settings regarding the input and output files
-        Settings.setInputHasHeader(true); //input has a header that has to be skipped
-        Settings.setOutputHasHeader(true); //output will have a header
-        Settings.setOutputFileType(Settings.FileType.ARFF); //output will be an .arff file
-        Settings.setDefaultUserId("dummy");
-
-        //if we would like to use walking cycles based feature extraction
-        //Settings.usingCycles(); 
-        //Settings.setNumStepsIgnored(1); //ignoring first and last step
-        //if we would like to use walking cycles based feature extraction
-        Settings.usingFrames(128); //using frames made of 128 datapoints
-        Settings.setNumFramesIgnored(2); //ignoring first and last 2 frames (256 datapoints in this scenario)
-
-        Settings.usingPreprocessing(true);
-        Settings.setUseDynamicPreprocessingThreshold(true);
-        Settings.setPreprocessingInterval(128);
-        //Settings.usingOrientationIndependence(true);
-
+        //Settings.useRecommendedSettingsWithCycles();
+        Settings.useRecommendedSettingsWithFrames();
+        
         //now based on the previous settings we are extracting features from the input file
         try {
             //extracting into a file
             FeatureExtractor.extractFeaturesFromCsvFileToFile(IOFolder + inputFileName, IOFolder + outputFileName);
-
+            
             //extracting into a list
-            //List<Feature> featureList = FeatureExtractor.extractFeaturesFromCsvFileToArrayListOfFeatures(IOFolder + inputFileName);
-            //System.out.println(featureList);
+            List<Feature> featureList = FeatureExtractor.extractFeaturesFromCsvFileToArrayListOfFeatures(IOFolder + inputFileName);
+            System.out.println(featureList);
         } catch (FeatureExtractorException ex) {
             Logger.getLogger(FeatureExtractorLibraryMainTest.class.getName()).log(Level.SEVERE, null, ex);
         }

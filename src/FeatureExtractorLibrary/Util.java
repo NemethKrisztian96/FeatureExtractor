@@ -24,24 +24,23 @@ import weka.core.Instances;
 public class Util implements IUtil {
 
     //private ProtectedProperties classVal;
-    private ArrayList attributes;
+    //private ArrayList<Attribute> attributes;
     //private Attribute userId;
-
     /**
      * Constructor
      */
-    public Util() {}
-    
-    /**
-     * Function that preprocesses an input list based on the given settings 
-     * regarding preprocessing threshold and interval in the Settings class.
-     * @param inputData
-     * @return the preprocessed list
-     */
+    public Util() {
+    }
+
     @Override
     public List<Accelerometer> preprocess(List<Accelerometer> inputData) {
         if (Settings.isUsingDynamicPreprocessingThreshold()) {
-            Settings.setPreprocessingThreshold(magnitudeMean(inputData));
+            double avg = magnitudeMean(inputData);
+            if (avg > 10) {
+                Settings.setPreprocessingThreshold(avg);
+            } else {
+                Settings.setPreprocessingThreshold(10);
+            }
         }
 
         List<Accelerometer> outputData = new ArrayList<>();
@@ -53,7 +52,13 @@ public class Util implements IUtil {
                 i += Settings.getPreprocessingInterval(); //skipping the useless data
                 i -= incrementationValue;
             } else { //keeping the useful data
-                for (int j = i; j < i + incrementationValue; ++j) {
+                int boundary;
+                if (i + incrementationValue < inputData.size()) {
+                    boundary = i + incrementationValue;
+                } else {
+                    boundary = inputData.size();
+                }
+                for (int j = i; j < boundary; ++j) {
                     outputData.add(inputData.get(j));
                 }
             }
@@ -251,7 +256,7 @@ public class Util implements IUtil {
         bin8_magnitude = new Attribute("bin8_magnitude");
         bin9_magnitude = new Attribute("bin9_magnitude");
 
-        attributes = new ArrayList();
+        ArrayList<Attribute> attributes = new ArrayList<>();
         attributes.add(minimum_for_axis_X);
         attributes.add(minimum_for_axis_Y);
         attributes.add(minimum_for_axis_Z);
@@ -417,4 +422,27 @@ public class Util implements IUtil {
         return dense;
     }
 
+    @Override
+    public List<Accelerometer> normalize(List<Accelerometer> inputList, double min, double max) {
+        List<Accelerometer> normalizedList = new ArrayList<>();
+        for (Accelerometer accelObj : inputList) {
+            Accelerometer normalizedObj = new Accelerometer(
+                    accelObj.getTimeStamp(),
+                    (accelObj.getX() - min) / (max - min),
+                    (accelObj.getY() - min) / (max - min),
+                    (accelObj.getZ() - min) / (max - min),
+                    accelObj.getStep());
+            normalizedList.add(normalizedObj);
+        }
+        return normalizedList;
+    }
+
+    //normalize each axis by separate values??
+    private static double norm(List<Accelerometer> input) {
+        float retval = 0;
+        for (Accelerometer input1 : input) {
+            //retval += input.get(i) * input.get(i);
+        }
+        return (float) Math.sqrt(retval);
+    }
 }

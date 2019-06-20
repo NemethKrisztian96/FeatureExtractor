@@ -39,11 +39,11 @@ public class FeatureExtractorLibraryMainTest {
 
         String IOFolder = "../FeatureExtractorLibrary_IO_files/";
         String inputFileName = "rawdata_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700.csv";
-        String outputFileName = "features_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700";
+        String outputFileName = "features_LnntbFQGpBeHx3RwMu42e2yOks32_20181130_164700.arff";
 
         //Settings.useRecommendedSettingsWithCycles();
         Settings.useRecommendedSettingsWithFrames();
-        
+        System.out.println(FeatureExtractor.getFilenameWithoutExtension(IOFolder+outputFileName));
         //now based on the previous settings we are extracting features from the input file
         try {
             //extracting into a file

@@ -31,6 +31,8 @@ public final class Settings {
         ARFF, CSV
     };
 
+    public static final double GRAVITY = 9.8;
+
     private static FileType outputFileType = FileType.ARFF;
     private static boolean cycles = false;
     private static boolean frames = false;
@@ -39,6 +41,12 @@ public final class Settings {
     private static boolean outputHasHeader = false;
     private static int numStepsIgnored = 0;
     private static int numFramesIgnored = 0;
+    private static boolean preprocessing = false;
+    private static boolean useDynamicPreprocessingThreshold = false;
+    private static double preprocessingThreshold = 0;
+    private static int preprocessingInterval = 0; //the length of the interval that will be cut out
+    private static double histogramGravityMultiplier = 1.5;
+    //private static boolean orientationIndependent = false;
 
     /**
      * Sets the FeatureExtractor to use cycles instead of fixed frames
@@ -316,9 +324,193 @@ public final class Settings {
         sb.append("\tOutputFileType: ");
         sb.append(getOutputFileType() == FileType.ARFF ? ".arff" : ".csv");
         sb.append("\n");
-        sb.append("\tThe input file has a header\n");
-        sb.append("\tThe output file has a header\n");
+        if (inputHasHeader) {
+            sb.append("\tThe input file has a header\n");
+        }
+        if (outputHasHeader) {
+            sb.append("\tThe output file has a header\n");
+        }
+        if (preprocessing) {
+            sb.append("\tThe input is preprocessed with " + preprocessingThreshold + " threshold and " + preprocessingInterval + " interval\n");
+        }
+        //TODO normalize + orientation
         return sb.toString();
     }
 
+    /**
+     * Checks if the FeatureExtractor is running preprocessing before extracting
+     * features
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @return true if it is using preprocessing
+     * @since 23 ‎July, ‎2018
+     */
+    public static boolean isUsingPreprocessing() {
+        return preprocessing;
+    }
+
+    /**
+     * Sets the FeatureExtractor to run preprocessing before extracting features
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @param preprocessing true to specify that preprocessing should be run, or
+     * false to specify that preprocessing shouldn't be run
+     * @since 23 ‎July, ‎2018
+     */
+    public static void usingPreprocessing(boolean preprocessing) {
+        Settings.preprocessing = preprocessing;
+    }
+
+    /**
+     * Sets the FeatureExtractor to run preprocessing before extracting features
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @param useDynamicPreprocessingThreshold true to specify that dynamic
+     * preprocessing threshold should be used, or false to specify that it
+     * shouldn't be used
+     * @since 23 ‎July, ‎2018
+     */
+    public static void setUseDynamicPreprocessingThreshold(boolean useDynamicPreprocessingThreshold) {
+        Settings.useDynamicPreprocessingThreshold = useDynamicPreprocessingThreshold;
+    }
+
+    /**
+     * Checks if the preprocessing procedure is using dynamic preprocessing
+     * thresholds
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @return true if it is using dynamic preprocessing threshold, or false if
+     * it is not
+     * @since 23 ‎July, ‎2018
+     */
+    public static boolean isUsingDynamicPreprocessingThreshold() {
+        return useDynamicPreprocessingThreshold;
+    }
+
+    /**
+     * Gets the preprocessing threshold's size
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @return the size of the preprocessing threshold
+     * @since 23 ‎July, ‎2018
+     */
+    public static double getPreprocessingThreshold() {
+        return preprocessingThreshold;
+    }
+
+    /**
+     * Sets the threshold's value used by the preprocessing procedure; redundant
+     * if dynamic preprocessing threshold is used
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @param preprocessingThreshold the desired threshold's value
+     * @since 23 ‎July, ‎2018
+     */
+    public static void setPreprocessingThreshold(double preprocessingThreshold) {
+        if (preprocessingThreshold < 0) {
+            Settings.preprocessingThreshold = 0;
+        } else {
+            Settings.preprocessingThreshold = preprocessingThreshold;
+        }
+    }
+
+    /**
+     * Gets the length of the intervals that can be excluded during the
+     * preprocessing procedure
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @return the size of the preprocessing threshold
+     * @since 23 ‎July, ‎2018
+     */
+    public static int getPreprocessingInterval() {
+        return preprocessingInterval;
+    }
+
+    /**
+     * Sets the FeatureExtractor to exclude intervals with the specified length
+     * from the input data during the preprocessing procedure
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @param preprocessingInterval the desired interval length
+     * @since 23 ‎July, ‎2018
+     */
+    public static void setPreprocessingInterval(int preprocessingInterval) {
+        if (preprocessingInterval < 0) {
+            Settings.preprocessingInterval = 0;
+        } else {
+            Settings.preprocessingInterval = preprocessingInterval;
+        }
+    }
+
+    /**
+     * Gets the multiplier value that multiplied with the gravitational
+     * acceleration value will be used to determine the intervals for histogram
+     * calculation during feature extraction
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @return the size of the preprocessing threshold
+     * @since 23 ‎July, ‎2018
+     */
+    public static double getHistogramGravityMultiplier() {
+        return histogramGravityMultiplier;
+    }
+
+    /**
+     * Determines the intervals that will be used for histogram calculation
+     * during feature extraction by specifying the value that should be
+     * multiplied with the gravitational acceleration value (g=9.8)
+     *
+     * @author Krisztian Nemeth
+     * @version 1.0
+     * @param histogramGravityMultiplier the value that should be multiplied
+     * with the gravitational
+     * @since 23 ‎July, ‎2018
+     */
+    public static void setHistogramGravityMultiplier(double histogramGravityMultiplier) {
+        if (histogramGravityMultiplier == 0) {
+            Settings.histogramGravityMultiplier = 1;
+        }
+        Settings.histogramGravityMultiplier = histogramGravityMultiplier;
+    }
+
+    /**
+     * Sets multiple settings, like the use of 128 data point frames or
+     * preprocessing, for easier use.
+     */
+    public static void useRecommendedSettingsWithFrames() {
+        usingFrames(128);
+        setNumFramesIgnored(1);
+        usingPreprocessing(true);
+        setUseDynamicPreprocessingThreshold(true);
+        setPreprocessingInterval(100);
+        Settings.setInputHasHeader(true);
+        Settings.setOutputHasHeader(true);
+        Settings.setOutputFileType(Settings.FileType.ARFF);
+        Settings.setDefaultUserId("dummy");
+    }
+
+    /**
+     * Sets multiple settings, like the use of cycles or preprocessing, for
+     * easier use.
+     */
+    public static void useRecommendedSettingsWithCycles() {
+        usingCycles();
+        setNumStepsIgnored(1);
+        usingPreprocessing(true);
+        setUseDynamicPreprocessingThreshold(true);
+        setPreprocessingInterval(100);
+        Settings.setInputHasHeader(true);
+        Settings.setOutputHasHeader(true);
+        Settings.setOutputFileType(Settings.FileType.ARFF);
+        Settings.setDefaultUserId("dummy");
+    }
 }
